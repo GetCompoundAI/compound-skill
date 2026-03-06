@@ -71,6 +71,9 @@ compound workspaces share <workspace-id> team      # team members
 compound workspaces share <workspace-id> private   # only you
 compound threads share <workspace-id> <thread-id> public
 
+# Update
+compound update
+
 # Configuration
 compound config set api-url https://ws.getcompound.ai
 compound config set default-workspace <workspace-id>

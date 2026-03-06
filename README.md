@@ -53,6 +53,12 @@ Or add this repo as a reference in your CLAUDE.md:
 See https://github.com/getcompoundai/compound-skill/blob/main/CLAUDE.md for compound CLI usage.
 ```
 
+## Update
+
+```bash
+compound update
+```
+
 ## Quick start
 
 ```bash

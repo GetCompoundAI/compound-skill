@@ -139,6 +139,14 @@ compound workspaces share <workspace-id> private
 compound threads share <workspace-id> <thread-id> public
 ```
 
+### Update
+
+```bash
+compound update
+```
+
+Checks for a newer version and prints the install command if one is available.
+
 ### Configuration
 
 ```bash
