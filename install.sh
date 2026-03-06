@@ -2,7 +2,14 @@
 set -euo pipefail
 
 REPO="getcompoundai/compound-skill"
-INSTALL_DIR="${COMPOUND_INSTALL_DIR:-$HOME/.local/bin}"
+if [ -z "${COMPOUND_INSTALL_DIR:-}" ]; then
+  case "$(uname -s)" in
+    Darwin) INSTALL_DIR="/usr/local/bin" ;;
+    *)      INSTALL_DIR="$HOME/.local/bin" ;;
+  esac
+else
+  INSTALL_DIR="$COMPOUND_INSTALL_DIR"
+fi
 
 info() { printf '\033[1;34m%s\033[0m\n' "$*"; }
 error() { printf '\033[1;31merror: %s\033[0m\n' "$*" >&2; exit 1; }
@@ -68,8 +75,13 @@ main() {
 
   tar xzf "${tmp}/${archive_name}" -C "$tmp"
 
-  mkdir -p "$INSTALL_DIR"
-  install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
+  mkdir -p "$INSTALL_DIR" 2>/dev/null || true
+  if [ -w "$INSTALL_DIR" ]; then
+    install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
+  else
+    info "Installing to ${INSTALL_DIR} (requires sudo)..."
+    sudo install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
+  fi
 
   info "Installed compound to ${INSTALL_DIR}/compound"
 
