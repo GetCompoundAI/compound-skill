@@ -63,7 +63,7 @@ download() {
 }
 
 main() {
-  local platform version archive_name url tmp install_dir
+  local platform="" version="" archive_name="" url="" tmp="" install_dir=""
 
   platform="$(detect_platform)"
   info "Detected platform: ${platform}"
