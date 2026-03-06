@@ -2,17 +2,34 @@
 set -euo pipefail
 
 REPO="getcompoundai/compound-skill"
-if [ -z "${COMPOUND_INSTALL_DIR:-}" ]; then
-  case "$(uname -s)" in
-    Darwin) INSTALL_DIR="/usr/local/bin" ;;
-    *)      INSTALL_DIR="$HOME/.local/bin" ;;
-  esac
-else
-  INSTALL_DIR="$COMPOUND_INSTALL_DIR"
-fi
 
 info() { printf '\033[1;34m%s\033[0m\n' "$*"; }
 error() { printf '\033[1;31merror: %s\033[0m\n' "$*" >&2; exit 1; }
+
+pick_install_dir() {
+  if [ -n "${COMPOUND_INSTALL_DIR:-}" ]; then
+    echo "$COMPOUND_INSTALL_DIR"
+    return
+  fi
+
+  # Try /usr/local/bin first (always on PATH)
+  if [ -w /usr/local/bin ]; then
+    echo "/usr/local/bin"
+    return
+  fi
+
+  # Fallback per platform
+  case "$(uname -s)" in
+    Darwin)
+      # macOS: sudo to /usr/local/bin is standard
+      echo "/usr/local/bin"
+      ;;
+    *)
+      # Linux: use ~/.local/bin to avoid sudo
+      echo "$HOME/.local/bin"
+      ;;
+  esac
+}
 
 detect_platform() {
   local os arch
@@ -55,7 +72,7 @@ download() {
 }
 
 main() {
-  local platform version archive_name url tmp
+  local platform version archive_name url tmp install_dir
 
   platform="$(detect_platform)"
   info "Detected platform: ${platform}"
@@ -75,20 +92,21 @@ main() {
 
   tar xzf "${tmp}/${archive_name}" -C "$tmp"
 
-  mkdir -p "$INSTALL_DIR" 2>/dev/null || true
-  if [ -w "$INSTALL_DIR" ]; then
-    install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
+  install_dir="$(pick_install_dir)"
+  mkdir -p "$install_dir" 2>/dev/null || true
+  if [ -w "$install_dir" ]; then
+    install -m 755 "${tmp}/compound-${platform}" "${install_dir}/compound"
   else
-    info "Installing to ${INSTALL_DIR} (requires sudo)..."
-    sudo install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
+    info "Installing to ${install_dir} (requires sudo)..."
+    sudo install -m 755 "${tmp}/compound-${platform}" "${install_dir}/compound"
   fi
 
-  info "Installed compound to ${INSTALL_DIR}/compound"
+  info "Installed compound to ${install_dir}/compound"
 
-  if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
+  if ! echo "$PATH" | tr ':' '\n' | grep -qx "$install_dir"; then
     info ""
     info "Add to your PATH:"
-    info "  export PATH=\"${INSTALL_DIR}:\$PATH\""
+    info "  export PATH=\"${install_dir}:\$PATH\""
   fi
 
   info ""
