@@ -23,7 +23,13 @@ compound login
 ## Use with OpenClaw
 
 ```bash
-clawhub install compound
+# Install the skill directly
+git clone https://github.com/getcompoundai/openclaw.git ~/.openclaw/skills/compound
+
+# Verify
+openclaw skills list | grep compound
+
+# Use it
 openclaw agent --message "use compound to analyze my portfolio"
 ```
 
