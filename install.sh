@@ -18,17 +18,8 @@ pick_install_dir() {
     return
   fi
 
-  # Fallback per platform
-  case "$(uname -s)" in
-    Darwin)
-      # macOS: sudo to /usr/local/bin is standard
-      echo "/usr/local/bin"
-      ;;
-    *)
-      # Linux: use ~/.local/bin to avoid sudo
-      echo "$HOME/.local/bin"
-      ;;
-  esac
+  # Fallback: ~/.local/bin (no sudo needed)
+  echo "$HOME/.local/bin"
 }
 
 detect_platform() {
@@ -104,9 +95,25 @@ main() {
   info "Installed compound to ${install_dir}/compound"
 
   if ! echo "$PATH" | tr ':' '\n' | grep -qx "$install_dir"; then
-    info ""
-    info "Add to your PATH:"
-    info "  export PATH=\"${install_dir}:\$PATH\""
+    local line="export PATH=\"${install_dir}:\$PATH\""
+    local profile=""
+    if [ -f "$HOME/.zshrc" ]; then
+      profile="$HOME/.zshrc"
+    elif [ -f "$HOME/.bashrc" ]; then
+      profile="$HOME/.bashrc"
+    elif [ -f "$HOME/.profile" ]; then
+      profile="$HOME/.profile"
+    fi
+
+    if [ -n "$profile" ] && ! grep -qF "$install_dir" "$profile"; then
+      echo "$line" >> "$profile"
+      info "Added ${install_dir} to PATH in ${profile}"
+      info "Restart your shell or run: source ${profile}"
+    else
+      info ""
+      info "Add to your PATH:"
+      info "  $line"
+    fi
   fi
 
   info ""
