@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="getcompoundai/openclaw"
+REPO="getcompoundai/compound-skill"
 INSTALL_DIR="${COMPOUND_INSTALL_DIR:-/usr/local/bin}"
 
 info() { printf '\033[1;34m%s\033[0m\n' "$*"; }

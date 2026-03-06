@@ -5,13 +5,13 @@ AI-powered financial analysis. Chat with AI to analyze documents and edit Excel 
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/getcompoundai/openclaw/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash
 ```
 
 Or specify a version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/getcompoundai/openclaw/main/install.sh | bash -s v0.1.0
+curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash -s v0.1.0
 ```
 
 Then authenticate:
@@ -24,7 +24,7 @@ compound login
 
 ```bash
 # Install the skill directly
-git clone https://github.com/getcompoundai/openclaw.git ~/.openclaw/skills/compound
+git clone https://github.com/getcompoundai/compound-skill.git ~/.openclaw/skills/compound
 
 # Verify
 openclaw skills list | grep compound
@@ -50,7 +50,7 @@ Then tell Claude: "use compound to list my workspaces"
 Or add this repo as a reference in your CLAUDE.md:
 
 ```markdown
-See https://github.com/getcompoundai/openclaw/blob/main/CLAUDE.md for compound CLI usage.
+See https://github.com/getcompoundai/compound-skill/blob/main/CLAUDE.md for compound CLI usage.
 ```
 
 ## Quick start
