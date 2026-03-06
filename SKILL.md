@@ -6,7 +6,27 @@ metadata: {"openclaw": {"emoji": "🏦", "os": ["darwin", "linux"], "primaryEnv"
 
 # Compound CLI
 
-Compound is an AI-powered financial analysis tool. Use the `compound` CLI to send messages, manage workspaces, and work with documents.
+Compound is an AI-powered financial analysis tool. Use the `compound` CLI to chat with AI, analyze financial data, and create documents.
+
+## Use Cases
+
+- **Financial research**: Ask questions about SEC filings, earnings transcripts, stock data, and Polymarket predictions
+- **Data analysis**: Upload spreadsheets, PDFs, or entire folders and ask the AI to analyze trends, compare metrics, or summarize findings
+- **Excel models**: Build financial models, DCF analyses, comp tables, and budget spreadsheets — the AI creates and edits Excel workbooks
+- **Word documents**: Generate investment memos, research reports, and due diligence summaries
+- **PowerPoint decks**: Create pitch decks, earnings presentations, and board materials
+- **Sharing**: Make workspaces or threads public/team-visible to collaborate or share results
+
+## Data Integrations
+
+Compound has built-in access to:
+
+- **SEC filings** — 10-K, 10-Q, 8-K, proxy statements, and more
+- **Stock data** — Real-time and historical prices, fundamentals, and financial statements
+- **Earnings transcripts** — Conference call transcripts with Q&A
+- **Polymarket** — Prediction market data and odds
+
+No API keys needed — just ask about a company or topic and Compound fetches the data.
 
 ## Concepts
 
@@ -62,6 +82,7 @@ compound chat -w <workspace-id> -t <thread-id>
 ```bash
 compound workspaces list [--json]
 compound workspaces create "My Analysis" [--json]
+compound workspaces share <workspace-id> <private|team|public> [--json]
 ```
 
 ### Threads
@@ -69,6 +90,7 @@ compound workspaces create "My Analysis" [--json]
 ```bash
 compound threads list <workspace-id> [--json]
 compound threads create <workspace-id> --name "Q4 Analysis" [--json]
+compound threads share <workspace-id> <thread-id> <private|team|public> [--json]
 ```
 
 ### Messages
@@ -97,6 +119,24 @@ Documents the AI creates or edits during a chat (Excel, Word, PDF, etc.).
 compound artifacts list <workspace-id> <thread-id> [--json]
 compound artifacts download <workspace-id> <thread-id> <version-id> [-o output.xlsx]
 compound artifacts download-all <workspace-id> <thread-id> [-o output-dir]
+```
+
+### Sharing
+
+Control who can access a workspace or thread.
+
+```bash
+# Make a workspace public (anyone with the link)
+compound workspaces share <workspace-id> public
+
+# Share with your team
+compound workspaces share <workspace-id> team
+
+# Make private (only you)
+compound workspaces share <workspace-id> private
+
+# Share a thread (thread can't be more visible than its workspace)
+compound threads share <workspace-id> <thread-id> public
 ```
 
 ### Configuration
@@ -129,6 +169,9 @@ compound ask "What were the revenue trends?" -w <workspace-id>
 
 # 4. Download any artifacts the AI created
 compound artifacts download-all <workspace-id> <thread-id>
+
+# 5. Share the thread publicly
+compound threads share <workspace-id> <thread-id> public
 ```
 
 ## Environment Variables
