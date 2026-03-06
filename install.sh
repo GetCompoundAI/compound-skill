@@ -76,7 +76,7 @@ main() {
   url="https://github.com/${REPO}/releases/download/${version}/${archive_name}"
 
   tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  trap 'rm -rf "'"$tmp"'"' EXIT
 
   info "Downloading ${url}..."
   download "$url" "${tmp}/${archive_name}"
