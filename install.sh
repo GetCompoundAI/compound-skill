@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="getcompoundai/compound-skill"
-INSTALL_DIR="${COMPOUND_INSTALL_DIR:-/usr/local/bin}"
+INSTALL_DIR="${COMPOUND_INSTALL_DIR:-$HOME/.local/bin}"
 
 info() { printf '\033[1;34m%s\033[0m\n' "$*"; }
 error() { printf '\033[1;31merror: %s\033[0m\n' "$*" >&2; exit 1; }
@@ -68,14 +68,17 @@ main() {
 
   tar xzf "${tmp}/${archive_name}" -C "$tmp"
 
-  if [ ! -w "$INSTALL_DIR" ]; then
-    info "Installing to ${INSTALL_DIR} (requires sudo)..."
-    sudo install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
-  else
-    install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
-  fi
+  mkdir -p "$INSTALL_DIR"
+  install -m 755 "${tmp}/compound-${platform}" "${INSTALL_DIR}/compound"
 
   info "Installed compound to ${INSTALL_DIR}/compound"
+
+  if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
+    info ""
+    info "Add to your PATH:"
+    info "  export PATH=\"${INSTALL_DIR}:\$PATH\""
+  fi
+
   info ""
   info "Next steps:"
   info "  compound login          # authenticate"
