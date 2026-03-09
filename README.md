@@ -35,23 +35,22 @@ openclaw agent --message "use compound to analyze my portfolio"
 
 ## Use with Claude Code
 
-Add to your project's `.claude/settings.json`:
+1. Install the plugin (in Claude Code):
 
-```json
-{
-  "permissions": {
-    "allow": ["Bash(compound:*)"]
-  }
-}
+```
+/plugin marketplace add getcompoundai/compound-skill
+/plugin install compound@getcompoundai-compound-skill
 ```
 
-Then tell Claude: "use compound to list my workspaces"
+The plugin automatically installs the `compound` binary on first session if not already present.
 
-Or add this repo as a reference in your CLAUDE.md:
+2. Authenticate:
 
-```markdown
-See https://github.com/getcompoundai/compound-skill/blob/main/CLAUDE.md for compound CLI usage.
+```bash
+compound login
 ```
+
+3. Tell Claude: "use compound to list my workspaces"
 
 ## Update
 

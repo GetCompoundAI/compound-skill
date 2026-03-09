@@ -1,0 +1,11 @@
+{
+  "name": "compound",
+  "description": "AI-powered financial analysis — chat with AI to analyze documents, build Excel models, and create reports",
+  "version": "0.3.0",
+  "author": {
+    "name": "Compound AI"
+  },
+  "homepage": "https://getcompound.ai",
+  "repository": "https://github.com/getcompoundai/compound-skill",
+  "license": "MIT"
+}
