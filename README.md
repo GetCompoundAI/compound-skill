@@ -1,6 +1,6 @@
 # Compound
 
-AI-powered financial analysis. Chat with AI to analyze documents and edit Excel workbooks, Word docs, and more.
+Turn raw data into professional documents. Upload PDFs, CSVs, spreadsheets, or data rooms and use AI to analyze, transform, and produce polished Excel workbooks, PowerPoint decks, and Word documents.
 
 ## Install
 

@@ -4,7 +4,7 @@
   "plugins": [
     {
       "name": "compound",
-      "description": "AI-powered financial analysis — chat with AI to analyze documents, build Excel models, and create reports",
+      "description": "Create professional Excel, PowerPoint, and Word documents from raw data — analyze PDFs, CSVs, SEC filings, earnings transcripts, Polymarket, and data rooms with AI",
       "source": { "source": "github", "repo": "getcompoundai/compound-skill" },
       "version": "0.3.0"
     }

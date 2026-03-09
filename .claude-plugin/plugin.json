@@ -1,6 +1,6 @@
 {
   "name": "compound",
-  "description": "AI-powered financial analysis — chat with AI to analyze documents, build Excel models, and create reports",
+  "description": "Create professional Excel, PowerPoint, and Word documents from raw data — analyze PDFs, CSVs, SEC filings, earnings transcripts, Polymarket, and data rooms with AI",
   "version": "0.3.0",
   "author": {
     "name": "Compound AI"
