@@ -1,14 +1,14 @@
 # Compound CLI
 
-Compound is an AI-powered financial analysis tool. Use the `compound` CLI to chat with AI, analyze financial data, and create documents.
+Compound turns raw data into professional work output. Upload PDFs, CSVs, spreadsheets, or entire data rooms and use AI to analyze, transform, and produce polished Excel workbooks, PowerPoint decks, and Word documents.
 
 ## Use Cases
 
-- **Financial research**: Ask questions about SEC filings, earnings transcripts, stock data, and Polymarket predictions
-- **Data analysis**: Upload spreadsheets, PDFs, or entire folders and ask the AI to analyze trends, compare metrics, or summarize findings
-- **Excel models**: Build financial models, DCF analyses, comp tables, and budget spreadsheets
-- **Word documents**: Generate investment memos, research reports, and due diligence summaries
-- **PowerPoint decks**: Create pitch decks, earnings presentations, and board materials
+- **Document creation**: Build professional Excel models, PowerPoint presentations, and Word reports from scratch or from uploaded data
+- **Data room analysis**: Upload folders of PDFs, spreadsheets, and documents — AI reads, cross-references, and synthesizes findings
+- **Data transformation**: Convert raw CSVs and PDFs into structured Excel workbooks with formatting, formulas, and charts
+- **Financial research**: Query SEC filings (10-K, 10-Q, 8-K), earnings transcripts, stock data, and Polymarket predictions — no API keys needed
+- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, ask questions, iterate on analysis, and download polished documents
 
 ## Data Integrations
 

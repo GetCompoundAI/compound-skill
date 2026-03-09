@@ -1,0 +1,11 @@
+{
+  "name": "compound",
+  "description": "Create professional Excel, PowerPoint, and Word documents from raw data — analyze PDFs, CSVs, SEC filings, earnings transcripts, Polymarket, and data rooms with AI",
+  "version": "0.3.0",
+  "author": {
+    "name": "Compound AI"
+  },
+  "homepage": "https://getcompound.ai",
+  "repository": "https://github.com/getcompoundai/compound-skill",
+  "license": "MIT"
+}
