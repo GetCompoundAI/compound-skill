@@ -63,6 +63,8 @@ compound ask "Summarize the report" --quiet
 compound ask "Create a budget spreadsheet" -w <id> --download
 ```
 
+When the AI needs clarification, it presents interactive multi-choice questions. Select an option by number or type a custom answer. The AI then continues with your response.
+
 ### Interactive chat session
 
 ```bash
