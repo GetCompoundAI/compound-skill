@@ -1,7 +1,8 @@
 {
-  "name": "compound-skill",
+  "name": "getcompoundai-compound-skill",
   "owner": {
-    "name": "Compound AI"
+    "name": "Compound AI",
+    "username": "getcompoundai"
   },
   "plugins": [
     {
