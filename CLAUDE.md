@@ -16,7 +16,7 @@ Compound has built-in access to SEC filings, stock data, earnings transcripts, a
 
 ## Authentication
 
-Run `compound login` to authenticate via browser, or set the `COMPOUND_TOKEN` environment variable.
+Run `compound login` to authenticate via browser (requires an interactive terminal — it reads a code you paste back). In a non-interactive context, ask the user to run it in their own terminal.
 
 ## Commands
 

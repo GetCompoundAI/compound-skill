@@ -66,7 +66,7 @@ openclaw agent --message "use compound to analyze my portfolio"
 /plugin install compound@getcompoundai-compound-skill
 ```
 
-The plugin automatically installs the `compound` binary on first session if not already present.
+Then restart Claude Code. The plugin installs the `compound` binary on session start, so it needs a fresh session to run.
 
 2. Authenticate:
 
@@ -80,10 +80,9 @@ compound login
 
 The `compound` binary is self-contained, so anything that can run a command can use it: try it in the terminal or with your own agent framework. Install it with the script above, or download the archive for your platform (`linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`) from the [releases page](https://github.com/getcompoundai/compound-skill/releases/latest).
 
-`compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically. Where an interactive login isn't possible, pass a token directly instead:
+`compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically, so a single interactive login keeps scripts and agents authenticated across sessions.
 
 ```bash
-export COMPOUND_TOKEN=<token>    # takes precedence over the stored login
 export COMPOUND_DRIVE_ID=<id>    # optional: default drive for commands
 ```
 

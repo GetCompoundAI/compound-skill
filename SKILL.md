@@ -7,7 +7,6 @@ metadata:
       {
         "emoji": "🏦",
         "os": ["darwin", "linux"],
-        "primaryEnv": "COMPOUND_TOKEN",
         "requires": { "bins": ["compound"] },
         "install":
           [
@@ -61,7 +60,7 @@ Compound turns raw data into professional work output. Upload PDFs, CSVs, spread
 Compound has built-in access to:
 
 - **SEC filings** — 10-K, 10-Q, 8-K, proxy statements, and more
-- **Stock data** — Real-time and historical prices, fundamentals, and financial statements
+- **Stock data** — Daily (end-of-day) and historical prices, fundamentals, and financial statements
 - **Earnings transcripts** — Conference call transcripts with Q&A
 - **Polymarket** — Prediction market data and odds
 
@@ -75,9 +74,7 @@ No API keys needed — just ask about a company or topic and Compound fetches th
 
 ## Authentication
 
-Run `compound login` to authenticate via browser — the primary path. It stores credentials locally and auto-refreshes them, so it keeps working indefinitely.
-
-Alternatively, set the `COMPOUND_TOKEN` environment variable (a Firebase ID token) as an override for environments that inject credentials. An expired `COMPOUND_TOKEN` is ignored in favor of the stored login.
+Run `compound login` to authenticate via browser — the primary path. It stores credentials locally and auto-refreshes them, so it keeps working indefinitely. **`compound login` requires an interactive terminal**: it opens a browser and reads a code you paste back. In a non-interactive context (an agent, CI, or any non-TTY shell) it fails fast instead of hanging — ask the user to run `compound login` in their own terminal.
 
 ## Commands
 
@@ -109,9 +106,12 @@ compound ask "Summarize inputs" -w <id> --readable-pattern "^input/"
 
 # Restrict which paths the AI can write to (regex on filenames)
 compound ask "Create output" -w <id> --writable-pattern "^output/"
+
+# Disable clarifying questions
+compound ask "Build the model" --no-questions
 ```
 
-When the AI needs clarification, it presents interactive multi-choice questions. Select an option by number or type a custom answer. The AI then continues with your response.
+On a new chat, `ask` prints the drive/chat IDs and a URL to stderr — capture them to continue the chat later with `-w <drive-id> -t <chat-id>`.
 
 ### Interactive chat session
 
@@ -252,7 +252,7 @@ compound config show
 ## Output Modes
 
 - **Human (default)**: Streams text inline, shows agent operations as status lines on stderr
-- **JSON (`--json`)**: NDJSON output — one JSON object per SSE event, easy for agents to parse
+- **JSON (`--json`)**: NDJSON output — one JSON object per SSE event, citations included, easy for agents to parse
 - **Quiet (`--quiet`)**: Only outputs the final text response (no streaming, no status)
 
 ## Typical Workflow
@@ -280,6 +280,5 @@ compound chats share <drive-id> <chat-id>
 
 | Variable            | Description                                       |
 | ------------------- | ------------------------------------------------- |
-| `COMPOUND_TOKEN`    | Firebase ID token for authentication              |
 | `COMPOUND_API_URL`  | API base URL (default: https://ws.getcompound.ai) |
 | `COMPOUND_DRIVE_ID` | Default drive ID                                  |
