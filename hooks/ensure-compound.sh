@@ -6,6 +6,6 @@ if ! command -v compound >/dev/null 2>&1; then
   curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash
 fi
 
-if [ ! -f "$HOME/.compound/config.json" ]; then
-  echo "Not logged in. Run 'compound login' to authenticate."
+if ! auth_output=$(compound whoami 2>&1); then
+  echo "$auth_output"
 fi
