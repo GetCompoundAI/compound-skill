@@ -8,7 +8,7 @@ Compound turns raw data into professional work output. Upload PDFs, CSVs, spread
 - **Data room analysis**: Upload folders of PDFs, spreadsheets, and documents — AI reads, cross-references, and synthesizes findings
 - **Data transformation**: Convert raw CSVs and PDFs into structured Excel workbooks with formatting, formulas, and charts
 - **Financial research**: Query SEC filings (10-K, 10-Q, 8-K), earnings transcripts, stock data, and Polymarket predictions — no API keys needed
-- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, ask questions, iterate on analysis, and download polished documents
+- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, message the agent, review its tasks and proposals, and download polished documents
 
 ## Data Integrations
 

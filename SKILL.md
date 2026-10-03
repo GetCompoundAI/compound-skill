@@ -53,7 +53,7 @@ Compound turns raw data into professional work output. Upload PDFs, CSVs, spread
 - **Data room analysis**: Upload folders of PDFs, spreadsheets, and documents — AI reads, cross-references, and synthesizes findings
 - **Data transformation**: Convert raw CSVs and PDFs into structured Excel workbooks with formatting, formulas, and charts
 - **Financial research**: Query SEC filings (10-K, 10-Q, 8-K), earnings transcripts, stock data, and Polymarket predictions — no API keys needed
-- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, ask questions, iterate on analysis, and download polished documents
+- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, message the agent, review its tasks and proposals, and download polished documents
 
 ## Data Integrations
 
@@ -64,13 +64,13 @@ Compound has built-in access to:
 - **Earnings transcripts** — Conference call transcripts with Q&A
 - **Polymarket** — Prediction market data and odds
 
-No API keys needed — just ask about a company or topic and Compound fetches the data.
+No API keys needed — message the agent about a company or topic and it fetches the data.
 
 ## Concepts
 
-- **Drive**: A container for related chats and files (like a project folder). Each drive can have uploaded files that the AI can reference.
-- **Chat**: A conversation with the AI within a drive. Chats can include AI-assisted artifact editing.
-- **Artifact**: A document produced or edited by the AI during a chat — Excel workbooks, Word documents, PDFs, or PowerPoint files.
+- **Agent**: Your AI agent. It holds one conversation with you, keeps a list of tasks, asks for approval through proposals, and reads and writes the files of its drive.
+- **Drive**: The agent's files (like a project folder). Each agent has exactly one drive, and the agent id is the drive id, so every drive operation (files, sharing, delete) is a `compound agent` command.
+- **Artifact**: A document the agent produces or edits — Excel workbooks, Word documents, PDFs, or PowerPoint files. It is stored as a file in the drive.
 
 ## Authentication
 
@@ -78,152 +78,109 @@ Run `compound login` to authenticate via browser — the primary path. It stores
 
 ## Commands
 
-### Ask a question (one-off)
+### Agent
+
+Your agent is one long-running conversation: you send it a message, it picks
+the work up and keeps going, opening subagents as it needs them. Every agent
+command is under `compound agent`. Name an agent before the subcommand
+(`compound agent <agent-id> tasks`, the id in `/agent/<agent-id>` in the app);
+without one, the command works on your own agent.
 
 ```bash
-# Ask a question — without --drive-id, the new chat is created in
-# your default "My Drive" (matching the web app's new-chat default).
-# A new chat is created automatically.
-compound ask "Analyze the revenue trends in Q4"
+# Your agents
+compound agent list [--json]
+compound agent new "My Analysis" [--json]
+compound agent <agent-id> delete [--force] [--json]   # moves its drive to the recycle bin (restorable for 30 days); prompts unless --force
 
-# Ask within a specific drive (AI can reference uploaded files in that drive)
-compound ask "Summarize the report" --drive-id <id>
+# One view: what needs you (questions, proposed tasks and proposals), what is running or paused, the last message
+compound agent status [--json]
 
-# Continue an existing chat
-compound ask "Follow up on that" -w <drive-id> -t <chat-id>
+# Say something to your agent. It starts working on it right away.
+compound agent say "check the revenue model for broken links"
 
-# Get JSON output (NDJSON, one event per line)
-compound ask "What is 2+2" --json
+# The conversation so far. Under a message that cites sources, each source
+# prints as `[N] <name> — <Compound link>`, or `[N] <key>` when it cannot be resolved.
+compound agent messages [-n 20] [--json]
 
-# Get only the final text response (no streaming, no status)
-compound ask "Summarize the report" --quiet
+# What it has been doing. --follow keeps the stream open and prints ops live;
+# --raw prints every stream frame, not only activity.
+compound agent activity [-n 50] [--json]
+compound agent activity --follow [--raw] [--json]
 
-# Download any artifacts the AI creates during the response
-compound ask "Create a budget spreadsheet" -w <id> --download
+# The work it is holding. States: proposed, running, needs_input, paused, completed, archived
+compound agent tasks [-s needs_input running] [-n 50] [--json]
 
-# Restrict which files the AI can read (regex on filenames)
-compound ask "Summarize inputs" -w <id> --readable-pattern "^input/"
-
-# Restrict which paths the AI can write to (regex on filenames)
-compound ask "Create output" -w <id> --writable-pattern "^output/"
-
-# Disable clarifying questions
-compound ask "Build the model" --no-questions
+# One task: show it, open a new one, move it, or reply on it
+compound agent task <number> [--json]
+compound agent task new "Q3 variance memo" [-m "<body markdown>"] [--json]
+compound agent task <number> set <state> [--json]
+compound agent task <number> reply "use the Q3 file" [--answers <message-id>] [--step <n>]
 ```
 
-On a new chat, `ask` prints the drive/chat IDs and a URL to stderr — capture them to continue the chat later with `-w <drive-id> -t <chat-id>`.
+`task <number> set <state>` reads the task's current state and makes the move
+that gets it there:
 
-### Interactive chat session
+| set to      | from                                       | does                          |
+| ----------- | ------------------------------------------ | ----------------------------- |
+| `running`   | proposed                                   | accept it and run it now      |
+| `running`   | paused                                     | resume it                     |
+| `scheduled` | proposed                                   | accept it onto its schedule   |
+| `paused`    | running, needs_input                       | pause it                      |
+| `archived`  | proposed, running, needs_input, paused, completed | archive it             |
+| `completed` | archived                                   | unarchive it                  |
+| `dismissed` | proposed                                   | turn it down; it is deleted   |
+
+Any other move fails and names the states the task can be set to. On `reply`,
+`--answers` names the question the agent asked (a message id from
+`agent messages --json`) and `--step` names the workflow step.
 
 ```bash
-# Start an interactive chat (auto-creates drive and chat)
-compound chat
+# Proposals: changes the agent asks you to approve
+compound agent proposals [--json]
+compound agent proposal <proposal-id> accept|decline [--json]
 
-# Chat within a specific drive
-compound chat -w <drive-id>
+# What the agent may use; change with <capability>=on|off
+# (org_conventions, email, connectors, proposals, questions, web, company_data, prediction_markets)
+compound agent settings [--json]
+compound agent settings web=off email=on
 
-# Resume a specific chat
-compound chat -w <drive-id> -t <chat-id>
+# A citation's saved source and its resolved target, as JSON, by the key in a
+# cited file, a message or a ?cite=<key> link
+compound agent citation <key>
 ```
 
-### Drives
+### Files
+
+Upload files or folders so the agent can read them; a folder upload keeps its
+relative paths. A downloaded docx or pptx has each citation linked to Compound;
+a downloaded xlsx has a note on each cited cell naming its sources, with a
+Compound link to each. A file the server cannot link downloads as stored.
 
 ```bash
-compound drives list [--json]
-compound drives create "My Analysis" [--json]
-compound drives publish <drive-id> [--json]                                          # turn on public link
-compound drives unpublish <drive-id> [--json]                                        # turn off public link
-compound drives share <drive-id> --team [--role read|write] [--json]                 # share with caller's team
-compound drives share <drive-id> --user <email> [--role read|write] [--json]         # share with a specific user
-compound drives unshare <drive-id> --team [--json]
-compound drives unshare <drive-id> --user <email> [--json]
-compound drives delete <drive-id> [--force] [--json]                                 # moves the drive to the recycle bin (restorable for 30 days); prompts unless --force
-```
-
-### Chats
-
-```bash
-compound chats list [drive-id] [--limit 20] [--json]   # omit drive-id for recent chats across all drives
-compound chats create <drive-id> --name "Q4 Analysis" [--json]
-compound chats share <drive-id> <chat-id> [--json]   # creates a public snapshot
-compound chats delete <drive-id> <chat-id> [--force] [--json]   # prompts unless --force
-```
-
-### Messages
-
-```bash
-compound messages list <drive-id> <chat-id> [--json] [--last 5]
-```
-
-### Files (drive-level documents)
-
-Upload files or folders to a drive so the AI can reference them in chats. Folder uploads preserve relative paths.
-
-```bash
-compound files list <drive-id> [--json]
-compound files upload <drive-id> ./report.xlsx [--json]
-compound files upload <drive-id> ./my-folder/ [--json]
-compound files download <drive-id> <file-id> [-o output.xlsx]
-compound files download-all <drive-id> [-o output-dir]
-```
-
-### Artifacts (AI-created documents in chats)
-
-Documents the AI creates or edits during a chat (Excel, Word, PDF, etc.).
-
-```bash
-compound artifacts list <drive-id> <chat-id> [--json]
-compound artifacts download <drive-id> <chat-id> <file-id> [-o output.xlsx]
-compound artifacts download-all <drive-id> <chat-id> [-o output-dir]
+compound agent files [--json]                         # list
+compound agent files upload ./report.xlsx ./data-folder/ [--json]
+compound agent files download <file-id> [-o out.xlsx]  # one id: -o is the file to write
+compound agent files download <file-id> <file-id> [-o out-dir]
+compound agent files download --all [-o out-dir]       # several ids or --all: -o is a folder; each file keeps its folder
 ```
 
 ### Sharing
 
-Control who can access a drive or chat. Drive sharing is split into two operations on the underlying share-entries collection: the public link (anyone with the URL) is a single bit toggled by `publish`/`unpublish`, and per-principal grants (team and individual users) are managed via `share`/`unshare`.
+Only the agent's owner can list or change its sharing.
 
 ```bash
-# Public link (anyone with the URL)
-compound drives publish <drive-id>
-compound drives unpublish <drive-id>
-
-# Per-principal grants (default role: write for --team, read for --user)
-compound drives share <drive-id> --team
-compound drives share <drive-id> --user alice@example.com
-compound drives share <drive-id> --user alice@example.com --role write
-
-# Remove a grant
-compound drives unshare <drive-id> --team
-compound drives unshare <drive-id> --user alice@example.com
-
-# Share a chat (creates a public snapshot)
-compound chats share <drive-id> <chat-id>
+compound agent share [--json]                          # who has access
+compound agent share --public                          # turn on the read-only public link
+compound agent share --team [--role read|write]        # your team; default role write
+compound agent share --user alice@example.com [--role read|write]   # default role read
+compound agent unshare --public | --team | --user alice@example.com
 ```
 
-### Scheduled Tasks
+### Moved commands
 
-```bash
-# List upcoming scheduled work: recurring schedules + one-time tasks still
-# `pending` or `in_progress`.
-compound tasks list [--json]
-
-# Create a one-time task
-compound tasks create -w <drive-id> --question "Summarize AAPL news" --scheduled-for 2026-04-01T09:00:00 [--timezone America/New_York]
-
-# Create a recurring schedule
-compound tasks create -w <drive-id> --question "Weekly report" --recurring --cron "0 9 * * MON-FRI" [--name "Weekday report"] [--timezone America/New_York]
-
-# Update a recurring schedule (cron, name, timezone, pause/resume)
-compound tasks update <id> --cron "0 10 * * *"
-compound tasks update <id> --pause
-compound tasks update <id> --resume
-
-# Delete a scheduled task or recurring schedule
-compound tasks delete <id>
-
-# View past runs. Without an id, a flat feed across every schedule and one-time
-# task. With an id, only runs for that recurring schedule.
-compound tasks history [id] [--json]
-```
+The top-level `compound drives` and `compound files` commands, and the
+`agent run|plan|dismiss|pause|resume|archive|unarchive|comment|accept|decline|watch`
+verbs, are gone. Running one prints the command that replaces it.
 
 ### Update
 
@@ -251,9 +208,8 @@ compound config show
 
 ## Output Modes
 
-- **Human (default)**: Streams text inline, shows agent operations as status lines on stderr
-- **JSON (`--json`)**: NDJSON output — one JSON object per SSE event, citations included, easy for agents to parse
-- **Quiet (`--quiet`)**: Only outputs the final text response (no streaming, no status)
+- **Human (default)**: Tables and one-line summaries
+- **JSON (`--json`)**: NDJSON output — one JSON object per line, easy for agents to parse
 
 ## Typical Workflow
 
@@ -261,19 +217,25 @@ compound config show
 # 1. Sign in
 compound login
 
-# 2. Create a drive and upload files (single file or entire folder)
-compound drives create "Q4 Analysis"
-compound files upload <drive-id> earnings.xlsx
-compound files upload <drive-id> ./data-folder/
+# 2. Upload files to your agent (single file or entire folder)
+compound agent files upload earnings.xlsx
+compound agent files upload ./data-folder/
 
-# 3. Ask questions about the files
-compound ask "What were the revenue trends?" -w <drive-id>
+# 3. Ask the agent for the work
+compound agent say "What were the revenue trends? Build a summary workbook."
 
-# 4. Download any artifacts the AI created
-compound artifacts download-all <drive-id> <chat-id>
+# 4. Follow what it does, and read its replies
+compound agent activity --follow
+compound agent messages
 
-# 5. Share the chat publicly
-compound chats share <drive-id> <chat-id>
+# 5. See what needs you, then answer the task or accept the proposal
+compound agent status
+compound agent task <number> reply "use the Q3 file"
+compound agent proposal <proposal-id> accept
+
+# 6. Download the files it created
+compound agent files
+compound agent files download --all -o ./out
 ```
 
 ## Environment Variables

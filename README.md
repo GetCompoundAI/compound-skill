@@ -26,29 +26,32 @@ compound login
 
 ```bash
 compound login                                    # authenticate
-compound drives create "Q4 Analysis"              # create drive
-compound files upload <drive-id> report.xlsx      # upload files
-compound ask "Summarize the report" -w <id>       # ask questions
-compound artifacts download-all <id> <chat-id>    # download results
+compound agent files upload report.xlsx           # upload files to your agent
+compound agent say "Summarize the report"         # message your agent
+compound agent messages                           # read its replies
+compound agent files download <file-id>           # download results
 ```
 
 ## Commands
 
 | Command | Description |
 |---|---|
-| `compound ask "..."` | Ask a one-off question |
-| `compound chat` | Start interactive chat |
-| `compound drives list` | List drives |
-| `compound files upload <drive> <file>` | Upload file to drive |
-| `compound artifacts download-all <drive> <chat>` | Download AI-created docs |
+| `compound agent say "..."` | Send a message to your agent |
+| `compound agent messages` | Show the agent's conversation |
+| `compound agent status` | What needs you (questions, proposed tasks, proposals), what is running |
+| `compound agent tasks` | Show the tasks the agent is holding |
+| `compound agent task <n> set <state>` | Run, pause, archive or dismiss a task |
+| `compound agent files` | List the agent's files |
+| `compound agent files upload <paths...>` | Upload files or folders to the agent |
+| `compound agent list` | List your agents |
 
 See `compound --help` for all commands.
 
 ## Use with OpenClaw
 
 ```bash
-# Install the skill directly
-git clone https://github.com/getcompoundai/compound-skill.git ~/.openclaw/skills/compound
+# Install the skill via OpenClaw's skill installer
+openclaw skills install git:getcompoundai/compound-skill
 
 # Verify
 openclaw skills list | grep compound
@@ -74,7 +77,7 @@ Then restart Claude Code. The plugin installs the `compound` binary on session s
 compound login
 ```
 
-3. Tell Claude: "use compound to list my drives"
+3. Tell Claude: "use compound to list my agents"
 
 ## Use standalone (scripts, CI, your own agents)
 
@@ -83,26 +86,28 @@ The `compound` binary is self-contained, so anything that can run a command can 
 `compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically, so a single interactive login keeps scripts and agents authenticated across sessions.
 
 ```bash
-export COMPOUND_DRIVE_ID=<id>    # optional: default drive for commands
+export COMPOUND_DRIVE_ID=<id>    # optional: default agent for commands
 ```
 
-For machine-readable output, list/upload commands take `--json`, and `ask` can stream events or reduce to plain text:
+For machine-readable output, list, upload and agent commands take `--json` and print NDJSON, one object per line:
 
 ```bash
-compound drives list --json      # JSON
-compound ask "..." --json        # NDJSON, one event per line
-compound ask "..." --quiet       # final text only
+compound agent list --json
+compound agent messages --json
+compound agent activity --follow --json
 ```
 
 A scripted pipeline — upload data, analyze, collect the produced documents:
 
 ```bash
-drive=$(compound drives create "Nightly Report" --json | jq -r '.id')
-compound files upload "$drive" ./data/
-compound ask "Build a summary workbook from the uploaded data" -w "$drive" --quiet -d
+agent=$(compound agent new "Nightly Report" --json | jq -r '.id')
+compound agent "$agent" files upload ./data/
+compound agent "$agent" say "Build a summary workbook from the uploaded data"
+compound agent "$agent" status --json
+compound agent "$agent" files download --all -o ./out
 ```
 
-`ask` prints the drive ID, chat ID, and a shareable URL to stderr, and `-d` downloads any documents the AI created to the current directory (or fetch them later with `compound artifacts download-all <drive-id> <chat-id>`).
+`compound agent <agent-id> ...` works on that agent and its drive. The agent runs the work in the background; `compound agent <agent-id> activity --follow` prints its progress, and `compound agent <agent-id> files` shows the documents it created.
 
 ## Update
 

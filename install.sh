@@ -119,7 +119,7 @@ main() {
   info ""
   info "Next steps:"
   info "  compound login          # authenticate"
-  info "  compound ask 'hello'    # send a message"
+  info "  compound agent say 'hello'    # message your agent"
 }
 
 main "$@"
