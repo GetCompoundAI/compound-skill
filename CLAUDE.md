@@ -1,18 +1,21 @@
 # Compound CLI
 
-Compound turns raw data into professional work output. Upload PDFs, CSVs, spreadsheets, or entire data rooms and use AI to analyze, transform, and produce polished Excel workbooks, PowerPoint decks, and Word documents.
+Compound is an AI analyst for finance work. Message an agent in plain English: it researches your files and public company data, builds Excel models, PowerPoint decks, Word memos and PDFs, cites each figure to its source, and keeps working in the background while you check in.
 
 ## Use Cases
 
-- **Document creation**: Build professional Excel models, PowerPoint presentations, and Word reports from scratch or from uploaded data
-- **Data room analysis**: Upload folders of PDFs, spreadsheets, and documents — AI reads, cross-references, and synthesizes findings
-- **Data transformation**: Convert raw CSVs and PDFs into structured Excel workbooks with formatting, formulas, and charts
-- **Financial research**: Query SEC filings (10-K, 10-Q, 8-K), earnings transcripts, stock data, and Polymarket predictions — no API keys needed
-- **End-to-end workflow**: Go from raw data to final deliverable — upload source files, message the agent, review its tasks and proposals, and download polished documents
+- **Financial models**: Build DCF, LBO, comparable companies, precedent transactions, public company, operating, add-on acquisition, debt schedule, returns, working capital, EBITDA bridge, SaaS cohort and real estate models as formatted Excel workbooks with live formulas
+- **Company research**: Answer questions from a company's SEC filings, earnings call transcripts, financial statements, stock prices and news, with each number cited to the passage it came from
+- **Data room and document review**: Upload a folder or a .zip of PDFs, workbooks, decks, documents and emails; the agent reads and cross-references them and writes up findings, summaries or diligence lists
+- **Decks, memos and reports**: Turn the analysis into a PowerPoint deck, a Word memo or a PDF, or have the agent revise one you upload; every edit saves a new version
+- **Screening**: Find companies by criteria such as country, industry or headcount, and compare them in a table
+- **Monitoring**: Ask the agent to follow companies (earnings, filings, news) or to run a request on a schedule, such as a weekly portfolio update; each event or run becomes a task, and its output lands in the agent's files
+- **Repeatable analysis**: Have the agent build a workbook template once, then run each new company or deal through a copy of it
+- **Work you steer**: The agent splits work into tasks, asks you when it needs input, and proposes work for your approval; `compound agent status` shows what is waiting on you, and you answer from the terminal
 
 ## Data Integrations
 
-Compound has built-in access to SEC filings, stock data, earnings transcripts, and Polymarket — no API keys needed.
+Compound has built-in access to SEC filings, financial statements, stock prices, earnings call transcripts, company news, prediction markets and the web — no API keys needed.
 
 ## Authentication
 

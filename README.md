@@ -1,6 +1,6 @@
 # Compound
 
-Turn raw data into professional documents. Upload PDFs, CSVs, spreadsheets, or data rooms and use AI to analyze, transform, and produce polished Excel workbooks, PowerPoint decks, and Word documents.
+Compound is an AI analyst for finance work. Message an agent in plain English: it researches your files and public company data, builds Excel models, PowerPoint decks, Word memos and PDFs, cites each figure to its source, and keeps working in the background while you check in.
 
 ## Install
 
