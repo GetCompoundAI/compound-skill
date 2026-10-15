@@ -20,7 +20,7 @@ Then authenticate:
 compound login
 ```
 
-`login` opens a browser sign-in page and prompts you to paste a code back, so it must run in an interactive terminal.
+`login` opens a browser sign-in page and prompts you to paste a code back. Without a terminal it prints the link; run `compound login --code <code>` with the code the page shows. `compound logout` signs out.
 
 ## Quick start
 
@@ -86,7 +86,7 @@ The `compound` binary is self-contained, so anything that can run a command can 
 `compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically, so a single interactive login keeps scripts and agents authenticated across sessions.
 
 ```bash
-export COMPOUND_DRIVE_ID=<id>    # optional: default agent for commands
+export COMPOUND_AGENT_ID=<id>    # optional: the agent commands use when none is named
 ```
 
 For machine-readable output, list, upload and agent commands take `--json` and print NDJSON, one object per line:
@@ -100,17 +100,18 @@ compound agent activity --follow --json
 A scripted pipeline — upload data, analyze, collect the produced documents:
 
 ```bash
-agent=$(compound agent new "Nightly Report" --json | jq -r '.id')
-compound agent "$agent" files upload ./data/
-compound agent "$agent" say "Build a summary workbook from the uploaded data"
-compound agent "$agent" status --json
-compound agent "$agent" files download --all -o ./out
+project=$(compound agent project new "Nightly Report" --json | jq -r '.id')
+task=$(compound agent say "Build a summary workbook from this data" --attach ./data/ --project "$project" --json | jq -r '.tasks[0].number')
+compound agent task "$task" --json | jq -r '.state'      # until "completed"
+mkdir -p out && (cd out && compound agent task "$task" --json | jq -r '.files[].file_id' | xargs compound agent files download)   # each file keeps its folder
 ```
 
-`compound agent <agent-id> ...` works on that agent and its drive. The agent runs the work in the background; `compound agent <agent-id> activity --follow` prints its progress, and `compound agent <agent-id> files` shows the documents it created.
+Work goes to Frankie, your default agent, unless you name one: `compound agent <agent-id> ...` works on that agent and its files. `compound agent task <n>` shows a task's state and the files it made, each with its link; `compound agent activity --follow` prints the agent's progress live.
 
 ## Update
 
 ```bash
 compound update
 ```
+
+The CLI also checks for a new release before each command. In a terminal it asks first; elsewhere it updates itself. Turn this off with `compound config set auto-update off`.

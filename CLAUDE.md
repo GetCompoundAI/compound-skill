@@ -9,7 +9,7 @@ Compound is an AI analyst for finance work. Message an agent in plain English: i
 - **Data room and document review**: Upload a folder or a .zip of PDFs, workbooks, decks, documents and emails; the agent reads and cross-references them and writes up findings, summaries or diligence lists
 - **Decks, memos and reports**: Turn the analysis into a PowerPoint deck, a Word memo or a PDF, or have the agent revise one you upload; every edit saves a new version
 - **Screening**: Find companies by criteria such as country, industry or headcount, and compare them in a table
-- **Monitoring**: Ask the agent to follow companies (earnings, filings, news) or to run a request on a schedule, such as a weekly portfolio update; each event or run becomes a task, and its output lands in the agent's files
+- **Monitoring**: Ask the agent to watch companies (earnings, filings, news) or to run a request on a schedule, such as a weekly portfolio update; each event or run becomes a task, and its output lands in the agent's files
 - **Repeatable analysis**: Have the agent build a workbook template once, then run each new company or deal through a copy of it
 - **Work you steer**: The agent splits work into tasks, asks you when it needs input, and proposes work for your approval; `compound agent status` shows what is waiting on you, and you answer from the terminal
 
@@ -19,7 +19,7 @@ Compound has built-in access to SEC filings, financial statements, stock prices,
 
 ## Authentication
 
-Run `compound login` to authenticate via browser (requires an interactive terminal — it reads a code you paste back). In a non-interactive context, ask the user to run it in their own terminal.
+Run `compound login` to authenticate via browser; in a terminal it reads the code you paste back. Without a terminal it prints the sign-in link and exits: give the user the link, then run `compound login --code <code>` with the code the page shows. `compound logout` signs out.
 
 ## Commands
 
