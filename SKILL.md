@@ -49,7 +49,7 @@ metadata:
 
 Compound is an AI analyst for finance work. You send a request in plain English to an agent. The agent researches the user's files and public company data, builds Excel models, PowerPoint decks, Word memos and PDFs, and cites each figure to its source. **The user does not create tasks; the agent does.** You ask with `compound agent say`, the agent opens and runs the tasks it needs, and you follow up on those tasks (reply, change state, file in a project, share, download files) and give the user their links.
 
-Every command is `compound agent <subcommand>`. With no agent named, it goes to **Frankie**, the user's default agent.
+Every command for work is `compound agent <subcommand>`. With no agent named, it goes to **Frankie**, the user's default agent.
 
 ## How to work with Compound
 
@@ -98,6 +98,7 @@ Options on `say` you will use:
 - **Errors** print to stderr as `Error: <reason>` (API errors: `Error (<status>): <reason>`) and exit 1. The reason says what to run instead; for example an unknown project id says `list them with: compound agent projects`. A retired command prints the command that replaces it.
 - **The CLI offers what the app offers, in the app's words.** Task states: Needs input, Running, Paused, Proposed, Done, Archived. Roles: Editor, Viewer. A viewer cannot upload, move, comment or share; `compound agent <agent-id> request-access` asks the owner for edit access.
 - **Email goes through an agent.** No command sends mail. Ask the agent with `say`. See the email recipe for who it can write to.
+- **Contact Support only for Compound itself.** When the user asks to contact support, report a problem with Compound (a bug, a failed command, a wrong result in the app) or request a feature, run `compound support --subject "<brief description>" "<message>"`, with `--type bug-report` or `--type feature-request` when it fits (default: General Support). For a long message, pipe it on stdin and leave out the message argument. Send it only when the user asks. It goes to the Compound team, not to an agent. Work on the user's files or companies goes to an agent with `say`. The server takes 2 requests per hour per user.
 
 ## Recipes
 
@@ -241,8 +242,8 @@ compound agent project <project-id> delete [--force]     # archives its tasks, k
 compound agent files [--path <folder>] [-r]              # one folder: folders, then files with File ID
 compound agent files search <query> [--everywhere]       # by name; --everywhere: all agents
 compound agent files upload <paths...> [--to <folder> | --project <id>]
-compound agent files download <file-id> [--file-version <n>] [-o <file>]
-compound agent files download <file-id...> | --all [-o <folder>]
+compound agent files download <file-id> [--file-version <n>] [--no-citation-links] [-o <file>]
+compound agent files download <file-id...> | --all [--no-citation-links] [-o <folder>]
 compound agent files versions <file-id>
 compound agent files export <file-id> --to pdf|xlsx [-o <file>]
 compound agent files open-desktop <file-id>              # link that opens desktop Excel or PowerPoint
@@ -311,8 +312,9 @@ compound agent <agent-id> delete [--force] | restore | purge [--force];  compoun
 ```bash
 compound login                       # terminal: opens the sign-in page, reads the code
 compound login --code <code>         # no terminal: the code the sign-in page shows
-compound logout                      # remove the saved sign-in
+compound logout                      # end the saved sign-in on the server and remove it
 compound whoami                      # signed-in email and user id
+compound support --subject "<subject>" ["<message>"] [--type general|bug-report|feature-request]   # Contact Support; message from stdin when left out
 compound update                      # install the latest release (commands also self-update)
 compound config set default-agent <agent-id> | auto-update on|ask|off
 compound config show

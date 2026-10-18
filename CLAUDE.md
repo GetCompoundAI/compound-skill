@@ -19,7 +19,7 @@ Compound has built-in access to SEC filings, financial statements, stock prices,
 
 ## Authentication
 
-Run `compound login` to authenticate via browser; in a terminal it reads the code you paste back. Without a terminal it prints the sign-in link and exits: give the user the link, then run `compound login --code <code>` with the code the page shows. `compound logout` signs out.
+Run `compound login` to authenticate via browser; in a terminal it reads the code you paste back. Without a terminal it prints the sign-in link and exits: give the user the link, then run `compound login --code <code>` with the code the page shows. `compound logout` signs out and ends that sign-in on the server.
 
 ## Commands
 

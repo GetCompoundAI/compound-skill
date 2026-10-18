@@ -20,7 +20,7 @@ Then authenticate:
 compound login
 ```
 
-`login` opens a browser sign-in page and prompts you to paste a code back. Without a terminal it prints the link; run `compound login --code <code>` with the code the page shows. `compound logout` signs out.
+`login` opens a browser sign-in page and prompts you to paste a code back. Without a terminal it prints the link; run `compound login --code <code>` with the code the page shows. `compound logout` signs out and ends that sign-in on the server.
 
 ## Quick start
 
