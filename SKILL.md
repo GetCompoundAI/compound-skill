@@ -312,6 +312,7 @@ compound agent <agent-id> delete [--force] | restore | purge [--force];  compoun
 ```bash
 compound login                       # terminal: opens the sign-in page, reads the code
 compound login --code <code>         # no terminal: the code the sign-in page shows
+compound login --api-key             # an API key, read from standard input
 compound logout                      # end the saved sign-in on the server and remove it
 compound whoami                      # signed-in email and user id
 compound support --subject "<subject>" ["<message>"] [--type general|bug-report|feature-request]   # Contact Support; message from stdin when left out
