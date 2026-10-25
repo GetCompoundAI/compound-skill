@@ -45,8 +45,6 @@ metadata:
 
 # Compound CLI
 
-# Compound CLI
-
 Compound is an AI analyst for finance work. You send a request in plain English to an agent. The agent researches the user's files and public company data, builds Excel models, PowerPoint decks, Word memos and PDFs, and cites each figure to its source. **The user does not create tasks; the agent does.** You ask with `compound agent say`, the agent opens and runs the tasks it needs, and you follow up on those tasks (reply, change state, file in a project, share, download files) and give the user their links.
 
 Every command for work is `compound agent <subcommand>`. With no agent named, it goes to **Frankie**, the user's default agent.

@@ -1,31 +1,45 @@
-# Compound
+# Compound CLI and agent skill: Excel, PowerPoint and Word work for AI agents
 
-Compound is an AI analyst for finance work. Message an agent in plain English: it researches your files and public company data, builds Excel models, PowerPoint decks, Word memos and PDFs, cites each figure to its source, and keeps working in the background while you check in.
+[Compound](https://getcompound.ai) is an AI analyst for finance work. From Claude Code, Codex, OpenClaw or your own agent, send a task through the `compound` CLI: Compound researches your files and public company data, builds the Excel model, PowerPoint deck, Word memo or PDF, cites each figure to its source, and returns the file to your agent.
+
+Documentation: https://getcompound.ai/help/compound-cli
 
 ## Install
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash
-```
+1. **Install the CLI and the skill.**
+   - **Claude Code**: type these two commands in Claude Code, then restart it. Plugins install only through commands the user types, so an agent asks the user to run them. The plugin installs the `compound` binary when a session starts.
+     ```
+     /plugin marketplace add getcompoundai/compound-skill
+     /plugin install compound@getcompoundai-compound-skill
+     ```
+   - **Codex**: install the CLI, then save `SKILL.md` as a user skill:
+     ```bash
+     curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash
+     mkdir -p ~/.agents/skills/compound
+     curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/SKILL.md -o ~/.agents/skills/compound/SKILL.md
+     ```
+     Restart Codex so it loads the skill. `compound` calls the Compound API over the network, so approve running `compound` outside the sandbox when Codex asks.
+   - **OpenClaw**: install the skill with OpenClaw's skill installer:
+     ```bash
+     openclaw skills install git:getcompoundai/compound-skill
+     ```
+   - **Any other agent, or a terminal**: install the CLI:
+     ```bash
+     curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash
+     ```
+     The script prints the path it installed to: `/usr/local/bin/compound` when that folder is writable, else `~/.local/bin/compound`. If the shell then says `compound: command not found`, run it by that full path. To install a specific release, add `-s` and its tag after `bash`, for example `bash -s v0.5.13183`.
+2. **Sign in** with `compound login`.
+   - In a terminal, it opens the sign-in page in a browser; paste the code it shows back into the terminal.
+   - Run by an agent without a terminal, it prints a sign-in link and exits. The agent gives the user the link, the user signs in and gives back the code, and the agent runs `compound login --code <code>`.
 
-Or specify a version:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/getcompoundai/compound-skill/main/install.sh | bash -s v0.4.215
-```
-
-Then authenticate:
-
-```bash
-compound login
-```
-
-`login` opens a browser sign-in page and prompts you to paste a code back. Without a terminal it prints the link; run `compound login --code <code>` with the code the page shows. `compound logout` signs out and ends that sign-in on the server.
+   `compound logout` signs out and ends that sign-in on the server.
+3. **Verify.** `compound whoami` prints the signed-in email and user id.
+4. **Keep the instructions.** Outside Claude Code, Codex and OpenClaw, save [`SKILL.md`](SKILL.md) as a skill or as standing instructions for the agent. It says how to send work, follow tasks and deliver files.
 
 ## Quick start
 
 ```bash
-compound login                                    # authenticate
+compound login                                    # sign in
 compound agent files upload report.xlsx           # upload files to your agent
 compound agent say "Summarize the report"         # message your agent
 compound agent messages                           # read its replies
@@ -47,43 +61,11 @@ compound agent files download <file-id>           # download results
 
 See `compound --help` for all commands.
 
-## Use with OpenClaw
-
-```bash
-# Install the skill via OpenClaw's skill installer
-openclaw skills install git:getcompoundai/compound-skill
-
-# Verify
-openclaw skills list | grep compound
-
-# Use it
-openclaw agent --message "use compound to analyze my portfolio"
-```
-
-## Use with Claude Code
-
-1. Install the plugin (in Claude Code):
-
-```
-/plugin marketplace add getcompoundai/compound-skill
-/plugin install compound@getcompoundai-compound-skill
-```
-
-Then restart Claude Code. The plugin installs the `compound` binary on session start, so it needs a fresh session to run.
-
-2. Authenticate:
-
-```bash
-compound login
-```
-
-3. Tell Claude: "use compound to list my agents"
-
 ## Use standalone (scripts, CI, your own agents)
 
-The `compound` binary is self-contained, so anything that can run a command can use it: try it in the terminal or with your own agent framework. Install it with the script above, or download the archive for your platform (`linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`) from the [releases page](https://github.com/getcompoundai/compound-skill/releases/latest).
+The `compound` binary is self-contained, so anything that can run a command can use it. Install it with the script above, or download the archive for your platform (`linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`) from the [releases page](https://github.com/getcompoundai/compound-skill/releases/latest).
 
-`compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically, so a single interactive login keeps scripts and agents authenticated across sessions.
+`compound login` stores credentials in `~/.compound/config.json` and refreshes them automatically, so one sign-in keeps scripts and agents signed in across sessions.
 
 ```bash
 export COMPOUND_AGENT_ID=<id>    # optional: the agent commands use when none is named
@@ -97,7 +79,7 @@ compound agent messages --json
 compound agent activity --follow --json
 ```
 
-A scripted pipeline — upload data, analyze, collect the produced documents:
+A scripted pipeline that uploads data, starts the work and collects the produced documents:
 
 ```bash
 project=$(compound agent project new "Nightly Report" --json | jq -r '.id')
@@ -115,3 +97,9 @@ compound update
 ```
 
 The CLI also checks for a new release before each command. In a terminal it asks first; elsewhere it updates itself. Turn this off with `compound config set auto-update off`.
+
+## Use with OpenClaw
+
+```bash
+openclaw skills install git:getcompoundai/compound-skill
+```
