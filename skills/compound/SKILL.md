@@ -296,12 +296,12 @@ compound agent inbox [<email-id>]                        # read-only; to send, a
 compound agent email allowlist [add|remove <address-or-domain...>] [--direction both|outbound|inbound]
 compound agent notifications [<id> dismiss|grant | dismiss-all]
 compound agent connections [connect|disconnect <name>]   # the user's connected apps; connect prints a sign-in link
-compound agent settings [web=off email=on connectors=on time_zone=America/New_York name="..."]
+compound agent settings [web=off email=on connectors=on time_zone=America/New_York name="..."]   # also shows the agent's email address
 compound agent <agent-id> properties [Name=Value ...]    # team custom fields
 compound agent usage [billing]                           # credits used and left
 compound agent citation <key>                            # a citation's source, as JSON
 compound agent list                                      # agents, Frankie first
-compound agent new "<name>"                              # only when the user asks for a new agent
+compound agent new "<name>" [--email-name <name>]        # only when the user asks for a new agent; the address starts with <name>- plus a short suffix
 compound agent <agent-id> delete [--force] | restore | purge [--force];  compound agent trash
 ```
 
