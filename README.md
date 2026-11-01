@@ -52,9 +52,9 @@ compound agent files download <file-id>           # download results
 |---|---|
 | `compound agent say "..."` | Send a message to your agent |
 | `compound agent messages` | Show the agent's conversation |
-| `compound agent status` | What needs you (questions, proposed tasks, proposals), what is running |
+| `compound agent status` | What needs you (questions, proposals), what is running |
 | `compound agent tasks` | Show the tasks the agent is holding |
-| `compound agent task <n> set <state>` | Run, pause, archive or dismiss a task |
+| `compound agent task <n> set <state>` | Run, pause or archive a task |
 | `compound agent files` | List the agent's files |
 | `compound agent files upload <paths...>` | Upload files or folders to the agent |
 | `compound agent list` | List your agents |

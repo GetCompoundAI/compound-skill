@@ -70,7 +70,6 @@ Every command for work is `compound agent <subcommand>`. With no agent named, it
    A task is Running until it is **Done**. Models and decks take minutes, not seconds. Do not poll in a tight loop: check at most every few minutes.
 4. **Answer what the agent asks.** `status` lists it under "Needs you":
    - A task in **Needs input** has a question. Read it with `compound agent messages --task 89`; the question prints its choices and the exact command that answers it: `compound agent task 89 reply --answers <message-id> "<answer>"`. The answer can be one of the choices or free text. Ask the user if you do not know the answer.
-   - A **Proposed** task waits for approval: `compound agent task 92 set running` (run now), `set planned` (put it on its schedule) or `set dismissed` (turn it down).
    - A **proposal** (an id, not a task number): `compound agent proposal <id> accept` or `decline`.
 5. **Follow up on a task** (more instructions, a correction, a new file): `compound agent task 89 reply "Use a 9% WACC" [--attach ./new.xlsx]`, or `compound agent say --task 89 "..."`. A task's effort is the agent's to set: to change it, ask in words on the task (`compound agent say --task 89 "work this at Deep effort"`). `--effort` with `--task` is refused.
 6. **Deliver the results.** `compound agent task 89` lists the task's files, each with its version and link. Give the user the links. To get a local copy, take the file ids from `compound agent task 89 --json` (`files[].file_id`) and run `compound agent files download <file-id> -o ./NVDA_DCF.xlsx`. With **one** file id, `-o` is the file to write; with several ids (or `--all`), `-o` is a folder. Missing folders are created.
@@ -94,7 +93,7 @@ Options on `say` you will use:
 - **Parse `--json`, not tables.** `--json` prints one JSON object per line (NDJSON) and keeps full text and raw ISO times. Tables cut long text on a terminal.
 - **Never print or ask for tokens.** If a command prints `Not signed in`, run `compound login`. Without a terminal it prints a sign-in link and exits. Give the user the link. The page shows a short code. When the user gives you the code, run `compound login --code <code>`.
 - **Errors** print to stderr as `Error: <reason>` (API errors: `Error (<status>): <reason>`) and exit 1. The reason says what to run instead; for example an unknown project id says `list them with: compound agent projects`. A retired command prints the command that replaces it.
-- **The CLI offers what the app offers, in the app's words.** Task states: Needs input, Running, Paused, Proposed, Done, Archived. Roles: Editor, Viewer. A viewer cannot upload, move, comment or share; `compound agent <agent-id> request-access` asks the owner for edit access.
+- **The CLI offers what the app offers, in the app's words.** Task states: Needs input, Running, Paused, Done, Archived. Roles: Editor, Viewer. A viewer cannot upload, move, comment or share; `compound agent <agent-id> request-access` asks the owner for edit access.
 - **Email goes through an agent.** No command sends mail. Ask the agent with `say`. See the email recipe for who it can write to.
 - **Contact Support only for Compound itself.** When the user asks to contact support, report a problem with Compound (a bug, a failed command, a wrong result in the app) or request a feature, run `compound support --subject "<brief description>" "<message>"`, with `--type bug-report` or `--type feature-request` when it fits (default: General Support). For a long message, pipe it on stdin and leave out the message argument. Send it only when the user asks. It goes to the Compound team, not to an agent. Work on the user's files or companies goes to an agent with `say`. The server takes 2 requests per hour per user.
 
@@ -192,7 +191,7 @@ If the work is on Frankie, do not send or share anything yet. Tell the user Fran
 ## Concepts
 
 - **Agent**: an AI analyst with one conversation, a board of tasks, and its own files. **Frankie** is the user's default agent; it stays private and cannot be shared or deleted.
-- **Task**: one piece of work the agent opens and runs, with a number. The user asks; the agent creates the tasks. States: Needs input, Running, Paused, Proposed, Done, Archived. **Finished** means Done or Archived.
+- **Task**: one piece of work the agent opens and runs, with a number. The user asks; the agent creates the tasks. States: Needs input, Running, Paused, Done, Archived. **Finished** means Done or Archived.
 - **Project**: a named piece of work on one agent (a company, a deal, a report) with its own tasks and folder.
 - **Proposal**: a change the agent asks the user to approve.
 - **Files**: the agent's files. Each edit saves a new version. A downloaded docx or pptx links each citation to Compound; an xlsx has a note on each cited cell.
@@ -211,18 +210,18 @@ compound agent say "<request>" [--attach <paths...>] [--project <id>] [--effort 
 compound agent status                                   # Needs you, Running, Paused, Unread, last message
 compound agent messages [-n 20] [--task <n>] [--before <message-id>]   # questions print their choices and the answer command
 compound agent activity [--task <n>] [-n 50] [-f]       # what the agent read, searched and wrote; -f follows live
-compound agent tasks [-s needs-input running paused proposed done archived] [--project <id>] [--needs-review] [--mine|--others] [-n 50]
+compound agent tasks [-s needs-input running paused done archived] [--project <id>] [--needs-review] [--mine|--others] [-n 50]
 compound agent finished [--project <id>] [-s done|archived] [-n 50]
 compound agent task <n>                                 # state, steps, files (version and link), comments
 compound agent task <n> reply "<text>" [--answers <message-id>] [--step <n>] [--attach <paths...>]
-compound agent task <n> set running|planned|paused|archived|done|dismissed
-compound agent task <n> project <project-id|none>       # Move to project (not on a Proposed task)
+compound agent task <n> set running|paused|archived|done
+compound agent task <n> project <project-id|none>       # Move to project
 compound agent task <n> read|unread                     # only on Done tasks
 compound agent proposals
 compound agent proposal <proposal-id> accept|decline [--to <agent-id>]
 ```
 
-`task <n> set` moves: Proposed → `running` (accept, run now), `planned` (Plan it: accept onto its schedule) or `dismissed` (turn down; deleted). Running or Needs input → `paused`. Paused → `running`. Any → `archived`. Archived → `done`. Other moves fail and name the allowed ones.
+`task <n> set` moves: Running or Needs input → `paused`. Paused → `running`. Any → `archived`. Archived → `done`. Other moves fail and name the allowed ones.
 
 ### Projects
 
