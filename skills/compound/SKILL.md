@@ -80,7 +80,7 @@ Options on `say` you will use:
 | --- | --- |
 | `--attach <paths...>` | The user gives you files or folders. They upload into `uploads/` and the agent reads them. A `.zip` (or other archive, `.msg`, `.eml`) is unpacked into the files on upload. |
 | `--project <project-id>` | The work belongs to a project (a company, deal or recurring report). Takes the project **id**: find it with `compound agent projects`. |
-| `--effort fast\|auto\|deep` | The user says "quick" (`fast`) or "be thorough" / "take your time" (`deep`). Default `auto`. Main chat only, as the app's effort toggle: the agent sets the task's effort from it. Not with `--task`. |
+| `--effort fast\|auto\|deep\|max` | The user says "quick" (`fast`), "be thorough" / "take your time" (`deep`) or asks for Max effort (`max`). Default `auto`. Main chat only, as the app's effort toggle: the agent sets the task's effort from it. Not with `--task`. |
 | `--task <n>` | The message is about an existing task. Not with `--project`. |
 | `--wait <seconds>` | Default 60. `--wait 0` sends and looks once. |
 | `--json` | You parse the result: `tasks[]` (each with `number`, `state`, `url`) and `reply`. |
@@ -165,7 +165,7 @@ compound agent say "What is AMD's P/E?" --effort fast
 compound agent say "Full diligence on the data room" --attach ./vdr/ --effort deep
 ```
 A quick question often gets an answer in the chat, not a task: `say` prints the answer. Relay it with the chat link.
-For a task that already exists, ask in words: `compound agent say --task 89 "work this at Deep effort"`. The agent changes the task's effort.
+For a task that already exists, ask in words: `compound agent say --task 89 "work this at Deep effort"`. The agent changes the task's effort to Fast, Auto or Deep, never to Max.
 
 **10. "Run this every weekday morning."**
 ```bash
@@ -195,7 +195,8 @@ If the work is on Frankie, do not send or share anything yet. Tell the user Fran
 - **Project**: a named piece of work on one agent (a company, a deal, a report) with its own tasks and folder.
 - **Proposal**: a change the agent asks the user to approve.
 - **Files**: the agent's files. Each edit saves a new version. A downloaded docx or pptx links each citation to Compound; an xlsx has a note on each cited cell.
-- **Effort**: Fast, Auto (default) or Deep, as the app's effort toggle in the main chat. A task's effort is the agent's to set: it takes it from the request, and changes it when the user asks in words on the task.
+- **Effort**: Fast, Auto (default), Deep or Max, as the app's effort toggle in the main chat. A task's effort is the agent's to set: it takes it from the request, and changes it to Fast, Auto or Deep when the user asks in words on the task. Words never reach Max: only a new request sent with `--effort max` (no `--task`) runs at Max. An existing task cannot be switched to Max from the CLI; send a new request at Max instead.
+- `--effort max` runs the agent at its most thorough and uses the most credits; it runs only when you pass it, and `auto` never picks it.
 
 Data the agent has without setup: SEC filings, standardized and as-reported financials, stock prices, earnings call transcripts, company documents and news, company screens, Polymarket odds, and web search. Turn a source off per agent with `settings`.
 
@@ -206,7 +207,7 @@ Data the agent has without setup: SEC filings, standardized and as-reported fina
 ### Conversation and tasks
 
 ```bash
-compound agent say "<request>" [--attach <paths...>] [--project <id>] [--effort fast|auto|deep | --task <n>] [--wait 60] [--json]
+compound agent say "<request>" [--attach <paths...>] [--project <id>] [--effort fast|auto|deep|max | --task <n>] [--wait 60] [--json]
 compound agent status                                   # Needs you, Running, Paused, Unread, last message
 compound agent messages [-n 20] [--task <n>] [--before <message-id>]   # questions print their choices and the answer command
 compound agent activity [--task <n>] [-n 50] [-f]       # what the agent read, searched and wrote; -f follows live
