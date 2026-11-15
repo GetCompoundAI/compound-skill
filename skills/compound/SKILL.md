@@ -298,6 +298,8 @@ compound agent notifications [<id> dismiss|grant | dismiss-all]
 compound agent connections [connect|disconnect <name>]   # the user's connected apps; connect prints a sign-in link
 compound agent settings [web=off email=on connectors=on time_zone=America/New_York name="..."]   # also shows the agent's email address
 compound agent <agent-id> properties [Name=Value ...]    # team custom fields
+compound agent import <paths...>                         # teach the agent another AI tool's skills, prompts or notes: it learns them into its memory
+compound agent learn [--status]                          # learn now from what people said and imported files
 compound agent usage [billing]                           # credits used and left
 compound agent citation <key>                            # a citation's source, as JSON
 compound agent list                                      # agents, Frankie first
