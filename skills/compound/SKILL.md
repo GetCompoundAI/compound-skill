@@ -194,7 +194,7 @@ If the work is on Frankie, do not send or share anything yet. Tell the user Fran
 - **Task**: one piece of work the agent opens and runs, with a number. The user asks; the agent creates the tasks. States: Needs input, Running, Paused, Done, Archived. **Finished** means Done or Archived.
 - **Project**: a named piece of work on one agent (a company, a deal, a report) with its own tasks and folder.
 - **Proposal**: a change the agent asks the user to approve.
-- **Files**: the agent's files. Each edit saves a new version. A downloaded docx or pptx links each citation to Compound; an xlsx has a note on each cited cell.
+- **Files**: the agent's files. Each edit saves a new version. A download is the file as stored; with `--citation-links` a docx or pptx links each citation to its source's public page, and an xlsx has a note on each cited cell.
 - **Effort**: Fast, Auto (default), Deep or Max, as the app's effort toggle in the main chat. A task's effort is the agent's to set: it takes it from the request, and changes it to Fast, Auto or Deep when the user asks in words on the task. Words never reach Max: only a new request sent with `--effort max` (no `--task`) runs at Max. An existing task cannot be switched to Max from the CLI; send a new request at Max instead.
 - `--effort max` runs the agent at its most thorough and uses the most credits; it runs only when you pass it, and `auto` never picks it.
 
@@ -240,8 +240,8 @@ compound agent project <project-id> delete [--force]     # archives its tasks, k
 compound agent files [--path <folder>] [-r]              # one folder: folders, then files with File ID
 compound agent files search <query> [--everywhere]       # by name; --everywhere: all agents
 compound agent files upload <paths...> [--to <folder> | --project <id>]
-compound agent files download <file-id> [--file-version <n>] [--no-citation-links] [-o <file>]
-compound agent files download <file-id...> | --all [--no-citation-links] [-o <folder>]
+compound agent files download <file-id> [--file-version <n>] [--citation-links] [-o <file>]
+compound agent files download <file-id...> | --all [--citation-links] [-o <folder>]
 compound agent files versions <file-id>
 compound agent files export <file-id> --to pdf|xlsx [-o <file>]
 compound agent files open-desktop <file-id>              # link that opens desktop Excel or PowerPoint
@@ -295,7 +295,7 @@ compound agent alerts [--deliver immediate|hourly|daily|weekly] [--on|--off]
 compound agent inbox [<email-id>]                        # read-only; to send, ask the agent with say
 compound agent email allowlist [add|remove <address-or-domain...>] [--direction both|outbound|inbound]
 compound agent notifications [<id> dismiss|grant | dismiss-all]
-compound agent connections [connect|disconnect <name>]   # the user's connected apps; connect prints a sign-in link
+compound agent connections [connect|disconnect|link|unlink <name>]   # the user's connected apps; connect prints a sign-in link; an agent uses the ones linked to it
 compound agent settings [web=off email=on connectors=on time_zone=America/New_York name="..."]   # also shows the agent's email address
 compound agent <agent-id> properties [Name=Value ...]    # team custom fields
 compound agent import <paths...>                         # teach the agent another AI tool's skills, prompts or notes: it learns them into its memory
